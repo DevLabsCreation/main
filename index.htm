@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>DevlabsCreation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome Link for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    * {
+      padding: 0;
+      margin: 0;
+      text-decoration: none;
+      list-style: none;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Montserrat", sans-serif;
+    }
+    nav {
+      background: #0082e6;
+      height: 80px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+    label.logo {
+      color: white;
+      font-size: 25px;
+      line-height: 80px;
+      padding: 0 100px;
+      font-weight: bold;
+    }
+    nav ul {
+      float: right;
+      margin-right: 20px;
+    }
+    nav ul li {
+      display: inline-block;
+      line-height: 80px;
+      margin: 0 5px;
+    }
+    nav ul li a {
+      color: white;
+      font-size: 17px;
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    nav a.active,
+    nav a:hover {
+      background: #1b9bff;
+      transition: .5s;
+    }
+    .checkbtn {
+      font-size: 22px;
+      color: white;
+      float: right;
+      line-height: 80px;
+      margin-right: 30px;
+      cursor: pointer;
+      display: none;
+    }
+    #check {
+      display: none;
+    }
+    @media (max-width: 1050px) {
+      label.logo {
+        padding-left: 30px;
+      }
+      nav ul li a {
+        font-size: 16px;
+      }
+    }
+    @media (max-width: 1000px) {
+      .checkbtn {
+        display: block;
+      }
+      label.logo {
+        font-size: 22px;
+      }
+      ul {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #2c3e50;
+        top: 80px;
+        left: -100%;
+        text-align: center;
+        transition: all .5s;
+      }
+      nav ul li {
+        display: block;
+        margin: 50px 0;
+        line-height: 30px;
+      }
+      nav ul li a {
+        font-size: 20px;
+      }
+      a:hover,
+      a.active {
+        background: #1b9bff;
+	width: 100%;
+	padding: 10px;
+      }
+      #check:checked~ul {
+        left: 0;
+      }
+    }
+    @media (max-width: 600px) {
+      nav ul li a {
+        font-size: 14px;
+      }
+    }
+    #mainimage {
+      background: url("mainwebsiteimage.png") no-repeat center;
+      background-size: cover;
+      height: calc(100vh);
+    }
+    .content {
+	background-color: black;
+	border-radius: 5px;
+	opacity: .8;
+	padding: 20px;
+      text-align: center;
+      color: white;
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+    .content h1 {
+      font-size: 50px;
+      margin-bottom: 20px;
+    }
+    .content p {
+      font-size: 20px;
+      margin-bottom: 30px;
+    }
+    .content a {
+      background: #0082e6;
+      color: white;
+      padding: 10px 20px;
+      border-radius: 5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: background 0.5s;
+    }
+    .content a:hover {
+      background: #1b9bff;
+    }
+    #about {
+      padding: 50px 0;
+      background: #f4f4f4;
+    }
+    #about .container {
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    #about h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    #about p {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 20px;
+      color: #666;
+    }
+    .about-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .about-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .about-item i {
+      font-size: 24px;
+      color: #0082e6;
+      margin-right: 15px;
+    }
+    /* Services Section Styling */
+    #services {
+      text-align: center;
+      padding: 4em 0;
+      background: #f4f4f4;
+    }
+
+    #services .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2em;
+    }
+
+    #services h2 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    #services p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #666;
+      line-height: 1.6;
+    }
+
+    .service-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2em;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 2em;
+      transition: transform 0.3s, background-color 0.3s;
+      flex: 1;
+    }
+
+    .service-item:hover {
+      transform: scale(1.05);
+      background-color: #e0e0e0;
+    }
+
+    .service-item i {
+      font-size: 3rem;
+      color: #0082e6;
+      margin-bottom: 1rem;
+    }
+
+    .service-item h3 {
+      font-size: 1.8rem;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+
+    .service-item p {
+      font-size: 1rem;
+      color: #666;
+      text-align: center;
+    }
+
+    #services .service-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2em;
+      justify-content: center;
+    }
+
+    @media (max-width: 768px) {
+      #services .service-container {
+      flex-direction: column;
+      align-items: center;
+      }
+    }
+
+    @media (max-width: 768px) {
+      #services .service-container {
+        flex-direction: column;
+        align-items: center;
+      }
+    }
+    #gallery {
+      padding: 50px 0;
+      background: #fff;
+    }
+    #gallery .container {
+      margin: 0 auto;
+      width: 95%;
+      padding: 0 20px;
+    }
+    #gallery h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    #gallery p {
+      text-align: center;
+      font-size: 18px;
+      margin-bottom: 40px;
+      color: #666;
+    }
+    .gallery-item {
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .gallery-item img {
+      width: 100%;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    .gallery-item h3 {
+      margin-top: 10px;
+      font-size: 20px;
+      color: #333;
+    }
+    .gallery-item:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    .thumbnails {
+      display: flex;
+      justify-content: center;
+      margin-top: 20px;
+    }
+    .thumbnails img {
+      width: 100px;
+      margin: 0 10px;
+      cursor: pointer;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .thumbnails img:hover {
+      transform: scale(1.1);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+/* Contact Section Styling */
+#contact {
+	padding: 50px 0;
+	background: #f4f4f4;
+	text-align: center;
+  }
+  
+#contact .container {
+	margin: 0 auto;
+	display: flex;
+	justify-content: center; /* Center horizontally */
+	align-items: center; /* Center vertically */
+	text-align: center;
+	padding: 0 20px;
+	flex-wrap: wrap;
+}
+  
+  #contact h2 {
+	text-align: center;
+	font-size: 36px;
+	margin-bottom: 20px;
+	color: #333;
+	width: 100%;
+  }
+  
+  #contact p {
+	text-align: center;
+	font-size: 18px;
+	margin-bottom: 40px;
+	color: #666;
+	width: 100%;
+  }
+  
+  .contact-form {
+  text-align: center;
+  width: 2000px;
+  }
+  
+  .contact-icons {
+	display: flex;
+	flex-direction: row;
+	justify-content: center; /* Center the icons horizontally */
+	align-items: center;
+	flex-wrap: wrap;
+	gap: 20px;
+	text-align: center; /* Ensure text alignment is centered */
+}
+
+  
+  .contact-icons a {
+	  color: #333;
+	  font-size: 24px;
+	  margin: 0;
+	  transition: color 0.3s, transform 0.3s;
+  }
+  
+  .contact-icons a:hover {
+	  transform: scale(1.2);
+	  color: #0082e6;
+  }
+  
+  .contact-button {
+	padding: 10px 20px;
+	font-size: 18px;
+	color: white;
+	background: #0082e6;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	transition: background 0.3s, transform 0.3s;
+	align-self: center;
+	text-decoration: none;
+	text-align: center;
+  }
+  
+  .contact-button:hover {
+	transform: scale(1.05);
+  }
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn">
+  	<i class="fas fa-bars" id="bars"></i>
+  	<i class="fas fa-times" id="cross" style="display: none;"></i>
+    </label>
+    <label class="logo">DevLabsCreation</label>
+    <ul>
+      <li><a class="active" href="index.htm">Home</a></li>
+      <li><a href="devlabs-about-page.htm">About</a></li>
+      <li><a href="devlabs-service-page.htm">Services</a></li>
+      <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+      <li><a href="devlabs-contact-page.htm">Contact</a></li>
+    </ul>
+  </nav>
+  <section id="mainimage">
+    <div class="content">
+      <h1>Welcome!</h1>
+      <p>To the path to get a FREE presence on the web.</p>
+      <a href="devlabs-service-page.htm">Learn More</a>
+    </div>
+  </section>
+  <section id="about">
+    <div class="container">
+      <h2>About DevlabsCreation</h2>
+      <p>DevlabsCreation aims to provide free, and customizable website templates for individuals, promoting online presence and digital inclusivity.</p>
+      <p>Welcome to DevlabsCreation, your one-stop-shop for customizable website templates. Our mission is to provide high-quality, easy-to-use templates to help you establish a strong online presence. Explore the current theme</p>
+      <div class="about-item">
+        <i class="fas fa-laptop-code"></i>.
+        <p>Offer free, customizable website templates.</p>
+      </div>
+      <div class="about-item">
+        <i class="fas fa-code-branch"></i>
+        <p>Utilize GitHub for hosting and version control.</p>
+      </div>
+      <div class="about-item">
+        <i class="fas fa-user-friends"></i>
+        <p>Provide a simple, user-friendly process for creating and deploying websites.</p>
+      </div>
+      <div class="about-item">
+        <i class="fas fa-users"></i>
+        <p>Foster a community-driven approach, encouraging contributions and feedback.</p>
+      </div>
+      <div class="about-item">
+        <i class="fas fa-calendar-alt"></i>
+        <p>Release new template designs every month, exploring diverse themes.</p>
+      </div>
+    </div>
+  </section>
+  <section id="services">
+    <div class="container">
+      <h2>Our Service</h2>
+      <p>At DevlabsCreation, we offer a service to provide anyone with their own personal websites.</p>
+      <div class="service-item">
+        <i class="fas fa-paint-brush"></i>
+        <h3>Web Design</h3>
+        <p>We provide the website design with a new one coming out every 3 months.</p>
+      </div>
+      <div class="service-item">
+        <i class="fas fa-code"></i>
+        <h3>Web Development</h3>
+        <p>We code the whole website so all you need to do is fill out a form to fill in the content.</p>
+      </div>
+      <div class="service-item">
+        <i class="fas fa-mobile-alt"></i>
+        <h3>Mobile Optimization</h3>
+        <p>Ensure your website looks great and functions perfectly on all devices.</p>
+      </div>
+    </div>
+  </section>
+  <section id="gallery">
+    <div class="container">
+      <h2>Gallery</h2>
+      <p>Explore our latest website design. We release a new design every 3 month!</p>
+      <div class="gallery-item">
+        <img id="galleryImage" src="mainsection.png" alt="Main Section of Website">
+        <h3>Design of the Month</h3>
+        <div class="thumbnails">
+          <img src="aboutsection.png" alt="About Section of Website" onclick="changeImage('aboutsection.png')">
+          <img src="portfoliosection.png" alt="Portfolio Section of Website" onclick="changeImage('portfoliosection.png')">
+          <img src="blogsection.png" alt="Blog Section of Website" onclick="changeImage('blogsection.png')">
+        </div>
+      </div>
+    </div>
+  </section>
+  <section id="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <p>We'd love to hear from you! Reach out to us using the form below.</p>
+      <div class="contact-form">
+        <iframe width="800" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+    </div>
+  </footer>
+</body>
+<script>
+  document.getElementById('check').addEventListener('change', function() {
+    var bars = document.getElementById('bars');
+    var cross = document.getElementById('cross');
+  
+    if (this.checked) {
+      bars.style.display = 'none';
+      cross.style.display = 'inline-block';
+    } else {
+      bars.style.display = 'inline-block';
+      cross.style.display = 'none';
+    }
+  });
+
+  function changeImage(imageSrc) {
+    const galleryImage = document.getElementById('galleryImage');
+    galleryImage.src = imageSrc;
+  }
+</script>
+</html>

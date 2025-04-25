@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <title>DevLabsCreation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome Link for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+    * {
+      padding: 0;
+      margin: 0;
+      text-decoration: none;
+      list-style: none;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Montserrat", sans-serif;
+      padding-top: 80px; /* Add padding to prevent content from being hidden behind the navbar */
+    }
+    nav {
+      background: #0082e6;
+      height: 80px;
+      width: 100%;
+      position: fixed;
+      top: 0;
+      z-index: 1000;
+    }
+    label.logo {
+      color: white;
+      font-size: 25px;
+      line-height: 80px;
+      padding: 0 100px;
+      font-weight: bold;
+    }
+    nav ul {
+      float: right;
+      margin-right: 20px;
+    }
+    nav ul li {
+      display: inline-block;
+      line-height: 80px;
+      margin: 0 5px;
+    }
+    nav ul li a {
+      color: white;
+      font-size: 17px;
+      padding: 7px 13px;
+      border-radius: 3px;
+      text-transform: uppercase;
+    }
+    nav a.active,
+    nav a:hover {
+      background: #1b9bff;
+      transition: .5s;
+    }
+    .checkbtn {
+      font-size: 22px;
+      color: white;
+      float: right;
+      line-height: 80px;
+      margin-right: 30px;
+      cursor: pointer;
+      display: none;
+    }
+    #check {
+      display: none;
+    }
+    @media (max-width: 1050px) {
+      label.logo {
+        padding-left: 30px;
+      }
+      nav ul li a {
+        font-size: 16px;
+      }
+    }
+    @media (max-width: 890px) {
+      .checkbtn {
+        display: block;
+      }
+      label.logo {
+        font-size: 22px;
+      }
+      ul {
+        position: fixed;
+        width: 100%;
+        height: 100vh;
+        background: #2c3e50;
+        top: 80px;
+        left: -100%;
+        text-align: center;
+        transition: all .5s;
+      }
+      nav ul li {
+        display: block;
+        margin: 50px 0;
+        line-height: 30px;
+      }
+      nav ul li a {
+        font-size: 20px;
+      }
+      a:hover,
+      a.active {
+        background: none;
+      }
+      #check:checked~ul {
+        left: 0;
+      }
+    }
+    @media (max-width: 600px) {
+      nav ul li a {
+        font-size: 14px;
+      }
+    }
+    .thumbnails .thumbnail:hover img {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    }
+    footer {
+      background: #2c3e50;
+      color: white;
+      padding: 20px 0;
+      text-align: center;
+    }
+    section#contact {
+      padding: 100px 0;
+      background: #f4f4f4;
+      text-align: center; /* Center the text */
+    }
+    section#contact .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    section#contact h2 {
+      text-align: center;
+      font-size: 36px;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    section#contact .form-container {
+      display: flex;
+      justify-content: center;
+      flex-direction: column;
+      align-items: center;
+    }
+    section#contact .form-container a {
+      display: block;
+      margin: 10px 0;
+      color: #333;
+      font-size: 18px;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    section#contact .form-container a:hover {
+      color: #0082e6;
+    }
+
+    section#contact .form-container i {
+      margin-right: 10px;
+    }
+
+    section#contact iframe {
+      width: 80%;
+      max-width: 600px;
+      margin: 20px 0;
+      border: none;
+    }
+
+    footer .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    footer p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    /* Additional styling for contact icons */
+    .form-container a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      width: 500px;
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    .form-container a:hover {
+      color: white;
+    }
+
+    .form-container i {
+      margin-right: 10px;
+    }
+    button{
+	color: white;
+	padding: 5px;
+	background-color: blue;
+	border: none;
+	border-radius: 2px;
+	}
+  </style>
+</head>
+<body>
+  <nav>
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn">
+      <i class="fas fa-bars"></i>
+    </label>
+    <label class="logo">DevLabsCreation</label>
+    <ul>
+      <li><a href="index.htm">Home</a></li>
+      <li><a href="devlabs-about-page.htm">About</a></li>
+      <li><a href="devlabs-service-page.htm">Services</a></li>
+      <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+      <li><a class="active" href="#">Contact</a></li>
+    </ul>
+  </nav>
+  <section id="contact">
+    <div class="container">
+      <h2>Contact Us</h2>
+      <h3>Want a website?</h3>
+      <p>If you would like to get a website, use this form.</p>
+      <div class="form-container">
+	<iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+	        <button onclick="openFullscreen('https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u')">Go Fullscreen</button>
+      </div>
+	<br>
+      <h3>Have Questions?</h3>
+      <p>Feel free to ask us anything by filling out the form below:</p>
+      <div class="form-container"></div>
+<iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>	<br>
+        <button onclick="openFullscreen('https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u')">Go Fullscreen</button>
+        <div class="form-container">
+        <a href="mailto:devlabscreation@outlook.com"><i class="fas fa-envelope"></i> devlabscreation@outlook.com</a>
+      </div>
+      </div>
+    </div>
+  </section>
+  <footer>
+    <div class="container">
+      <p>&copy; 2025 DevLabsCreation. All rights reserved.</p>
+    </div>
+  </footer>
+  <script>
+    function openFullscreen(url) {
+      const newWindow = window.open(url, '_blank', 'fullscreen=yes');
+      if (newWindow) {
+        newWindow.focus();
+      }
+    }
+  </script>
+</body>
+</html>
