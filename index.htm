@@ -329,6 +329,54 @@
       transform: scale(1.1);
       box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
     }
+.gallery-image-container {
+  position: relative;
+}
+
+.gallery-image-container img {
+  width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.phone-image {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .desktop-image {
+    display: none;
+  }
+  .phone-image {
+    display: block;
+  }
+}
+
+.prev, .next {
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: none;
+  padding: 10px;
+}
+
+.prev {
+  left: 0;
+  border-radius: 0 5px 5px 0;
+}
+
+.next {
+  right: 0;
+  border-radius: 5px 0 0 5px;
+}
+
+.prev:hover, .next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
 /* Contact Section Styling */
 #contact {
 	padding: 50px 0;
@@ -486,21 +534,28 @@
       </div>
     </div>
   </section>
-  <section id="gallery">
-    <div class="container">
-      <h2>Gallery</h2>
-      <p>Explore our latest website design. We release a new design every 3 month!</p>
-      <div class="gallery-item">
-        <img id="galleryImage" src="mainsection.png" alt="Main Section of Website">
-        <h3>Design of the Month</h3>
-        <div class="thumbnails">
-          <img src="aboutsection.png" alt="About Section of Website" onclick="changeImage('aboutsection.png')">
-          <img src="portfoliosection.png" alt="Portfolio Section of Website" onclick="changeImage('portfoliosection.png')">
-          <img src="blogsection.png" alt="Blog Section of Website" onclick="changeImage('blogsection.png')">
-        </div>
+  <!-- Gallery Section -->
+<section id="gallery">
+  <div class="container">
+    <h2>Gallery</h2>
+    <p>Explore our latest website design. We release a new design every 3 month!</p>
+    <div class="gallery-item">
+      <div class="gallery-image-container">
+        <img id="galleryImage" src="mainsection.png" alt="Main Section of Website" class="desktop-image">
+        <img id="galleryImagePhone" src="mainsection-phone.png" alt="Main Section of Website Phone" class="phone-image">
+        <button class="prev" onclick="prevImage()">&#10094;</button>
+        <button class="next" onclick="nextImage()">&#10095;</button>
+      </div>
+      <h3>Design of the Month</h3>
+      <div class="thumbnails">
+        <img src="aboutsection.png" alt="About Section of Website" onclick="changeImage('aboutsection.png', 'aboutsection-phone.png')">
+        <img src="portfoliosection.png" alt="Portfolio Section of Website" onclick="changeImage('portfoliosection.png', 'portfoliosection-phone.png')">
+        <img src="blogsection.png" alt="Blog Section of Website" onclick="changeImage('blogsection.png', 'blogsection-phone.png')">
+        <img src="mainsection.png" alt="Main Section of Website" onclick="changeImage('mainsection.png', 'mainsection-phone.png')">
       </div>
     </div>
-  </section>
+  </div>
+</section>
   <section id="contact">
     <div class="container">
       <h2>Contact Us</h2>
@@ -530,9 +585,32 @@
     }
   });
 
-  function changeImage(imageSrc) {
-    const galleryImage = document.getElementById('galleryImage');
-    galleryImage.src = imageSrc;
-  }
+let images = ["mainsection.png", "aboutsection.png", "portfoliosection.png", "blogsection.png"];
+let phoneImages = ["mainsection-phone.png", "aboutsection-phone.png", "portfoliosection-phone.png", "blogsection-phone.png"];
+let currentImageIndex = 0;
+
+function changeImage(imageSrc, phoneImageSrc) {
+  const galleryImage = document.getElementById('galleryImage');
+  const galleryImagePhone = document.getElementById('galleryImagePhone');
+  galleryImage.src = imageSrc;
+  galleryImagePhone.src = phoneImageSrc;
+  currentImageIndex = images.indexOf(imageSrc);
+}
+
+function prevImage() {
+  const galleryImage = document.getElementById('galleryImage');
+  const galleryImagePhone = document.getElementById('galleryImagePhone');
+  currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+  galleryImage.src = images[currentImageIndex];
+  galleryImagePhone.src = phoneImages[currentImageIndex];
+}
+
+function nextImage() {
+  const galleryImage = document.getElementById('galleryImage');
+  const galleryImagePhone = document.getElementById('galleryImagePhone');
+  currentImageIndex = (currentImageIndex + 1) % images.length;
+  galleryImage.src = images[currentImageIndex];
+  galleryImagePhone.src = phoneImages[currentImageIndex];
+}
 </script>
 </html>
