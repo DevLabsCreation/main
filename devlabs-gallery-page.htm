@@ -39,6 +39,9 @@ label.logo {
   padding: 0 100px;
   font-weight: bold;
 }
+#check:checked ~ label .fa-bars:before {
+        content: "\f00d"; /* Font Awesome's X icon */
+}
 
 nav ul {
   float: right;
@@ -198,7 +201,8 @@ footer {
   <nav>
     <input type="checkbox" id="check">
     <label for="check" class="checkbtn">
-      <i class="fas fa-bars"></i>
+  		<i class="fas fa-bars" id="bars"></i>
+  		<i class="fas fa-times" id="cross" style="display: none;"></i>
     </label>
     <label class="logo">DevLabsCreation</label>
     <ul>
