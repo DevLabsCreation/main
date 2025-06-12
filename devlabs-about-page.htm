@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation - About Us</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Based on your preferred design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc;
+            --background-white: #ffffff;
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            overflow-x: hidden;
+            padding-top: 80px; /* Space for fixed navigation bar */
+            background-color: var(--background-white); /* Default background for the page */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar (fixed at top) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px var(--shadow-light);
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            padding-left: 100px; /* Adjust as per your original layout */
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-right: 20px; /* Adjust as per your original layout */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+
+        .nav-links a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Underline animation for desktop nav */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Active link for the current page */
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+            margin-right: 30px; /* Adjust as per your original layout */
+        }
+
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Full-screen mobile menu overlay */
+        .full-screen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98); /* Semi-transparent white background */
+            backdrop-filter: blur(10px);
+            z-index: 999; /* Below fixed nav, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+
+        .full-screen-menu.is-active {
+            transform: translateX(0); /* Slide in */
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when active */
+        }
+
+        .full-screen-menu ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .full-screen-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .full-screen-menu a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-size: 2.5rem; /* Larger font size for full-screen */
+            font-weight: 700;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            outline: none;
+        }
+
+        .full-screen-menu a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 8px;
+            border-radius: 4px;
+        }
+
+        .full-screen-menu a::after { /* Underline for full-screen menu */
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-menu a:hover::after,
+        .full-screen-menu a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .full-screen-menu a:hover {
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .full-screen-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            z-index: 1001; /* Ensure it's above the menu itself */
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        .close-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .close-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive adjustments for navigation */
+        @media (max-width: 1000px) {
+            .nav-links { /* Hide standard desktop nav */
+                display: none;
+            }
+            .mobile-menu-btn { /* Show hamburger icon */
+                display: block;
+            }
+            .logo {
+                padding-left: 30px; /* Adjust logo padding for smaller screens */
+            }
+        }
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem; /* Smaller font on very small screens */
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+        }
+
+        /* Sections - General Styling */
+        .section {
+            padding: 5rem 0;
+        }
+
+        /* About Section Specific Styling */
+        #about.section {
+            background: var(--background-white); /* Always white background for About */
+        }
+        #about h2 { /* Targeting h2 within #about directly for the main titles */
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+        #about p { /* Targeting p within #about directly */
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color-medium);
+            line-height: 1.7;
+        }
+        #about h3 { /* Styling for sub-headings like "Why get a personal website?" */
+            font-size: 1.8rem;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+        .about-content-wrapper { /* General wrapper for about content blocks */
+            background: var(--background-white); /* Ensure it's white even if section background changes */
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            max-width: 900px; /* Constrain width for readability */
+            margin: 0 auto; /* Center the wrapper */
+        }
+
+        .spacer {
+            margin-bottom: 40px;
+        }
+
+        /* Card Container for Founders */
+        .card-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 2rem; /* Increased gap between cards */
+            margin-top: 2rem;
+        }
+
+        .card {
+            flex: 1 1 calc(50% - 2rem); /* Adjusted flex for two columns with gap */
+            max-width: 350px; /* Limit card width */
+            background: var(--background-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 25px var(--shadow-light);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+        }
+
+        .card img {
+            width: 100%;
+            height: 250px; /* Fixed height for consistent image size */
+            object-fit: cover;
+            border-radius: 15px 15px 0 0; /* Rounded top corners */
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-content h4 {
+            font-size: 1.4rem;
+            color: var(--text-color-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        .card-content p {
+            font-size: 1rem;
+            color: var(--text-color-medium);
+            margin-bottom: 0;
+        }
+
+        /* About Item / Feature Tags */
+        .about-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--background-light); /* Changed to light background for items for contrast */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .about-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+        }
+        .about-item i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            min-width: 1.8rem;
+            text-align: center;
+        }
+        .about-item p {
+            text-align: left;
+            margin-bottom: 0;
+            font-size: 1.05rem;
+        }
+
+        /* New Section: Our Impact */
+        .impact-section {
+            background: var(--background-light); /* Light background for this section */
+            padding: 5rem 0;
+            text-align: center;
+        }
+        .impact-section .container {
+            max-width: 1000px;
+        }
+        .impact-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+        .impact-item {
+            background: var(--background-white);
+            padding: 2.5rem 1.5rem; /* Adjusted padding */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .impact-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+        }
+        .impact-number {
+            font-size: 3.5rem; /* Large number */
+            color: var(--primary-color);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            line-height: 1; /* Remove extra line height for numbers */
+        }
+        .impact-description {
+            font-size: 1.1rem;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0;
+        }
+
+
+        /* Testimonials Section Styling */
+        .testimonials-section {
+            background: var(--background-white); /* White background for contrast */
+            padding: 5rem 0;
+        }
+        .testimonials-section .container {
+            max-width: 1000px; /* Slightly wider container for testimonials */
+        }
+        .testimonials-section h2 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .testimonial-card {
+            background: var(--background-white);
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            position: relative;
+            text-align: left;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border: 1px solid var(--border-color); /* Added subtle border */
+        }
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+        }
+        .testimonial-card::before {
+            content: '\201C'; /* Left double quotation mark */
+            font-family: serif; /* Use a serif font for quote */
+            font-size: 5rem; /* Large quote icon */
+            color: var(--primary-color);
+            position: absolute;
+            top: 0.5rem;
+            left: 1.5rem;
+            opacity: 0.2;
+            z-index: 0;
+        }
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: var(--text-color-medium);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            position: relative; /* Ensure text is above quote icon */
+            z-index: 1;
+        }
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem; /* Add padding for separation from text */
+            border-top: 1px solid var(--border-color); /* Subtle separator */
+        }
+        .author-avatar {
+            width: 60px; /* Larger avatar */
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            flex-shrink: 0; /* Prevent shrinking on small screens */
+        }
+        .author-info h4 {
+            color: var(--text-color-dark);
+            font-size: 1.1rem;
+            margin-bottom: 0.2rem;
+            font-weight: 600;
+        }
+        .author-info p {
+            color: var(--text-color-light);
+            font-size: 0.9rem;
+            margin-bottom: 0;
+        }
+
+
+        /* Footer */
+        footer {
+            background: var(--text-color-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* General Responsive Design */
+        @media (max-width: 768px) {
+            /* About section responsiveness */
+            #about h2 {
+                font-size: 2rem;
+            }
+            #about h3 {
+                font-size: 1.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .about-content-wrapper {
+                padding: 1.5rem;
+            }
+            .card-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            .card {
+                flex: 1 1 90%;
+                max-width: 300px;
+            }
+            .card img {
+                height: 200px;
+            }
+            .about-item {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            .about-item i {
+                font-size: 1.5rem;
+                margin-right: 0.8rem;
+            }
+            .about-item p {
+                font-size: 0.95rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+            .logo {
+                padding-left: 30px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+
+            /* Our Impact responsive */
+            .impact-section h2 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .impact-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .impact-item {
+                padding: 2rem 1rem;
+            }
+            .impact-number {
+                font-size: 3rem;
+            }
+            .impact-description {
+                font-size: 1rem;
+            }
+
+            /* Testimonials responsive */
+            .testimonials-section h2 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .testimonial-card {
+                padding: 1.5rem;
+            }
+            .testimonial-text {
+                font-size: 1rem;
+            }
+            .testimonial-author {
+                flex-direction: row;
+                align-items: center;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            #about h2 {
+                font-size: 1.8rem;
+            }
+            #about h3 {
+                font-size: 1.3rem;
+            }
+            .about-item i {
+                font-size: 1.2rem;
+            }
+            .about-item p {
+                font-size: 0.9rem;
+            }
+            .impact-number {
+                font-size: 2.5rem;
+            }
+            .impact-description {
+                font-size: 0.9rem;
+            }
+            .testimonial-card::before {
+                font-size: 3rem;
+            }
+            .author-avatar {
+                width: 50px;
+                height: 50px;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">DevlabsCreation</div>
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="index.htm">Home</a></li>
+                    <li><a href="devlabs-about-page.htm" class="active">About</a></li>
+                    <li><a href="devlabs-service-page.htm">Services</a></li>
+                    <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+                    <li><a href="devlabs-contact-page.htm">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full-screen mobile menu overlay -->
+    <div id="fullScreenMenu" class="full-screen-menu">
+        <button class="close-menu-btn" aria-label="Close menu">&times;</button>
+        <ul>
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="devlabs-about-page.htm">About</a></li>
+            <li><a href="devlabs-service-page.htm">Services</a></li>
+            <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+            <li><a href="devlabs-contact-page.htm">Contact</a></li>
+        </ul>
+    </div>
+
+    <section id="about" class="section">
+        <div class="container">
+            <div class="about-content-wrapper">
+                <h2>About Us</h2>
+                <p>Welcome to DevlabsCreation. We are dedicated to helping individuals establish their online presence. Our goal is to provide website templates that are easy to use and accessible to everyone. </p>
+                <div class="spacer"></div>
+                <p>DevlabsCreation was founded by special individuals who enjoy web development and promoting digital inclusivity. We strive to do our very best in making sure everyone gets the online presence they need. We have made the process easy and straightforward. </p>
+                <div class="spacer"></div>
+
+                <h2>Meet the Founders</h2>
+                <div class="card-container">
+                    <div class="card">
+                        <img src="https://placehold.co/350x250/667eea/ffffff?text=Ethan" alt="Ethan Yeung"> <!-- Placeholder with primary color -->
+                        <div class="card-content">
+                            <h4><b>Ethan Yeung</b></h4>
+                            <p>Experienced in website design</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <img src="https://placehold.co/350x250/764ba2/ffffff?text=Garvin" alt="Garvin Quah"> <!-- Placeholder with secondary color -->
+                        <div class="card-content">
+                            <h4><b>Garvin Quah</b></h4>
+                            <p>Experienced in website development</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="spacer"></div>
+
+                <h2>Our Mission</h2>
+                <div class="about-item">
+                    <i class="fas fa-laptop-code"></i>
+                    <p>Provide free, customizable website templates that can be made in different color themes.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-code-branch"></i>
+                    <p>Use GitHub for hosting the website. You will be using your own account.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-user-friends"></i>
+                    <p>Offer a simple, user-friendly process for getting your website.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-users"></i>
+                    <p>Encourage feedback and support.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-calendar-alt"></i>
+                    <p>Release new template designs every 6 months, exploring different themes.</p>
+                </div>
+                <div class="spacer"></div>
+
+                <h2>Our Core Values</h2>
+                <div class="about-item">
+                    <i class="fas fa-solid fa-lightbulb"></i>
+                    <p>Innovation: We strive to update our website designs and improve the overall performance.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-solid fa-users"></i>
+                    <p>Collaboration: Work with others to provide the best websites.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-solid fa-circle"></i>
+                    <p>Accessibility: Ensure our templates are easy to use and accessible to everyone. We also ensure that our process is easy to use.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-solid fa-city"></i>
+                    <p>Community: Building a supportive and inclusive community of users and contributors.</p>
+                </div>
+                <div class="about-item">
+                    <i class="fas fa-solid fa-calendar"></i>
+                    <p>Consistency: Regularly releasing new templates and updates to keep our offerings fresh and relevant.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!— Our Impact section —>
+    <!-- Testimonials Section -->
+    <section class="testimonials-section">
+        <div class="container">
+            <h2>What Our Users Say</h2>
+            <div class="testimonial-grid">
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"DevlabsCreation made getting my first website incredibly easy!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">D</div>
+                        <div class="author-info">
+                            <h4>Douglas</h4>
+                            <p>Freelance Designer</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <p class="testimonial-text">"I was so excited to get a website at no cost!"</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">N</div>
+                        <div class="author-info">
+                            <h4>Neil</h4>
+                            <p>Student</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- End New Testimonials Section -->
+
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get references to elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenuBtnIcon = mobileMenuBtn.querySelector('i');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');
+        const desktopNavLinks = document.querySelectorAll('.nav-links a');
+        const fullScreenNavLinks = document.querySelectorAll('#fullScreenMenu a');
+        const navbar = document.getElementById('navbar');
+
+        // Function to set active class based on current page
+        function setActiveNavLink() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const pageName = currentPath === '' || currentPath === 'index.htm' ? 'index.htm' : currentPath;
+
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+
+            fullScreenNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Run on page load
+        setActiveNavLink();
+
+        // Toggle full-screen menu with hamburger button
+        mobileMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.toggle('is-active');
+            if (fullScreenMenu.classList.contains('is-active')) {
+                document.body.style.overflow = 'hidden';
+                mobileMenuBtnIcon.classList.remove('fa-bars');
+                mobileMenuBtnIcon.classList.add('fa-times');
+            } else {
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close full-screen menu with the 'X' button
+        closeMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.remove('is-active');
+            document.body.style.overflow = '';
+            mobileMenuBtnIcon.classList.remove('fa-times');
+            mobileMenuBtnIcon.classList.add('fa-bars');
+        });
+
+        // Close full-screen menu when a link inside it is clicked
+        fullScreenNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullScreenMenu.classList.remove('is-active');
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // No gallery functionality needed on this page.
+    </script>
+</body>
+</html>

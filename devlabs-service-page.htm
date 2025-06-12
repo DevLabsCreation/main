@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation - Services</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Consistent with DevlabsCreation design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc; /* Light grey background */
+            --background-white: #ffffff; /* White background */
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+            --modal-bg-dark: #2d3748; /* Dark background for modal */
+            --modal-text-light: #f8fafc; /* Light text for modal */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            overflow-x: hidden;
+            padding-top: 80px; /* Space for fixed navigation bar */
+            background-color: var(--background-white); /* Default background for the page */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar (fixed at top) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px var(--shadow-light);
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            padding-left: 100px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-right: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+
+        .nav-links a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Underline animation for desktop nav */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Active link for the current page */
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+            margin-right: 30px;
+        }
+
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Full-screen mobile menu overlay */
+        .full-screen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98); /* Semi-transparent white background */
+            backdrop-filter: blur(10px);
+            z-index: 999; /* Below fixed nav, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+
+        .full-screen-menu.is-active {
+            transform: translateX(0); /* Slide in */
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when active */
+        }
+
+        .full-screen-menu ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .full-screen-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .full-screen-menu a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-size: 2.5rem; /* Larger font size for full-screen */
+            font-weight: 700;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            outline: none;
+        }
+
+        .full-screen-menu a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 8px;
+            border-radius: 4px;
+        }
+
+        .full-screen-menu a::after { /* Underline for full-screen menu */
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-menu a:hover::after,
+        .full-screen-menu a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .full-screen-menu a:hover {
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .full-screen-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            z-index: 1001; /* Ensure it's above the menu itself */
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        .close-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .close-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive adjustments for navigation */
+        @media (max-width: 1000px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .logo {
+                padding-left: 30px;
+            }
+        }
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+        }
+
+        /* Sections - General Styling */
+        .section {
+            padding: 5rem 0;
+        }
+
+        /* Specific section backgrounds */
+        #services.section {
+            background: var(--background-white); /* White background for Services */
+        }
+        #how-it-works.section {
+            background: var(--background-light); /* Light background for How It Works */
+        }
+
+        /* Section Titles - Consistent with previous pages */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+
+        /* Content wrappers for consistent padding and shadow */
+        .content-wrapper {
+            background: var(--background-white); /* White background for the wrapper */
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            max-width: 900px; /* Constrain width for readability */
+            margin: 0 auto; /* Center the wrapper */
+        }
+
+        .content-wrapper p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color-medium);
+            line-height: 1.7;
+        }
+
+        /* Service Item styling - consistent with about-item */
+        .service-item {
+            display: flex;
+            align-items: flex-start; /* Align icon and text to top */
+            margin-bottom: 1.5rem;
+            padding: 1.5rem;
+            background: var(--background-light); /* Light background for items for contrast */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow-light);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .service-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+        }
+        .service-item i {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            margin-right: 1rem;
+            min-width: 1.8rem; /* Ensure icon doesn't shrink */
+            text-align: center;
+            line-height: 1; /* Align icon better with text */
+            padding-top: 0.15em; /* Small adjustment for visual alignment */
+        }
+        .service-item p {
+            text-align: left;
+            margin-bottom: 0; /* Remove default paragraph margin */
+            font-size: 1.05rem;
+            line-height: 1.5; /* Adjust line height for readability */
+        }
+        .service-item p .modal-trigger-link { /* Styling for the link that opens the modal */
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        .service-item p .modal-trigger-link:hover {
+            text-decoration: underline;
+            color: var(--secondary-color);
+        }
+
+        .spacer {
+            margin-bottom: 40px;
+        }
+
+        /* Modal Overlay and Content */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); /* Dark semi-transparent background */
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000; /* Above everything else */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.is-active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background: var(--modal-bg-dark); /* Dark modal background */
+            color: var(--modal-text-light); /* Light text for modal */
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+            width: 90%;
+            max-width: 700px;
+            position: relative;
+            max-height: 90vh; /* Limit height to prevent overflow */
+            overflow-y: auto; /* Enable scrolling for long content */
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all 0.3s ease-out;
+        }
+
+        .modal-overlay.is-active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1.5rem;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--modal-text-light);
+            cursor: pointer;
+            transition: color 0.2s ease;
+            outline: none;
+        }
+        .modal-close-btn:hover {
+            color: var(--primary-color); /* Primary color on hover */
+        }
+        .modal-close-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .modal-content h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--modal-text-light);
+            text-align: center;
+            font-weight: 700;
+        }
+        .modal-content h4 {
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--primary-color); /* Highlight step titles */
+            font-weight: 600;
+        }
+        .modal-content p {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            color: var(--modal-text-light); /* Ensure paragraphs are light */
+            text-align: left; /* Align modal text left */
+        }
+        .modal-content p strong {
+            color: var(--primary-color); /* Make step numbers bold and colored */
+        }
+        .modal-content ul {
+            list-style: none; /* Remove default list style */
+            padding-left: 0;
+            margin-top: 0.5rem;
+        }
+        .modal-content ul li {
+            margin-bottom: 0.5rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--modal-text-light);
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .modal-content ul li::before {
+            content: '\2022'; /* Bullet point */
+            color: var(--primary-color); /* Primary color for bullets */
+            position: absolute;
+            left: 0;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .modal-content a {
+            color: var(--primary-color);
+            text-decoration: underline;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+        .modal-content a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Footer - Consistent with previous pages */
+        footer {
+            background: var(--text-color-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                padding-left: 30px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .content-wrapper {
+                padding: 1.5rem;
+            }
+            .content-wrapper p {
+                font-size: 1rem;
+            }
+            .service-item {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+            .service-item i {
+                font-size: 1.5rem;
+                margin-right: 0.8rem;
+            }
+            .service-item p {
+                font-size: 0.95rem;
+            }
+
+            /* Modal responsive */
+            .modal-content {
+                padding: 1.5rem;
+                width: 95%; /* Adjust width for smaller screens */
+            }
+            .modal-content h3 {
+                font-size: 1.5rem;
+                margin-bottom: 1rem;
+            }
+            .modal-content h4 {
+                font-size: 1.1rem;
+                margin-top: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .modal-content p, .modal-content ul li {
+                font-size: 0.9rem;
+            }
+            .modal-close-btn {
+                font-size: 2rem;
+                top: 0.5rem;
+                right: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .content-wrapper p {
+                font-size: 0.95rem;
+            }
+            .service-item i {
+                font-size: 1.2rem;
+            }
+            .service-item p {
+                font-size: 0.9rem;
+            }
+            .modal-content {
+                max-height: 85vh; /* Adjust for very small screens */
+            }
+            .modal-content h3 {
+                font-size: 1.3rem;
+            }
+            .modal-content h4 {
+                font-size: 1rem;
+            }
+            .modal-content p, .modal-content ul li {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">DevlabsCreation</div>
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="index.htm">Home</a></li>
+                    <li><a href="devlabs-about-page.htm">About</a></li>
+                    <li><a href="devlabs-service-page.htm" class="active">Services</a></li>
+                    <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+                    <li><a href="devlabs-contact-page.htm">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full-screen mobile menu overlay -->
+    <div id="fullScreenMenu" class="full-screen-menu">
+        <button class="close-menu-btn" aria-label="Close menu">&times;</button>
+        <ul>
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="devlabs-about-page.htm">About</a></li>
+            <li><a href="devlabs-service-page.htm">Services</a></li>
+            <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+            <li><a href="devlabs-contact-page.htm">Contact</a></li>
+        </ul>
+    </div>
+
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title">Our Service</h2>
+            <div class="content-wrapper">
+                <p>At DevlabsCreation, we offer a service that helps anyone gain an online presence. Our team is dedicated to providing you with a high-quality personal website that can suit your unique needs.</p>
+                <div class="spacer"></div>
+                <div class="service-item">
+                    <i class="fas fa-laptop-code"></i>
+                    <p><strong>Custom Website Development:</strong> Our website template can be customized to anyone’s needs.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-code-branch"></i>
+                    <p><strong>Website Maintenance:</strong> Ongoing support to keep your website running smoothly.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-solid fa-list"></i>
+                    <p><strong>Hosting:</strong> We provide the instructions on how to host your website on your own GitHub account. <span id="openHostingModal" class="modal-trigger-link">Learn more</span></p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-sync-alt"></i>
+                    <p><strong>Updates:</strong> Every 6 months, we come up with a new design to cover different themes and adapt to the evolving web.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="how-it-works" class="section">
+        <div class="container">
+            <h2 class="section-title">How It Works</h2>
+            <div class="content-wrapper">
+                <p>Getting a website with DevlabsCreation is a simple and straightforward process. Follow these steps to get started:</p>
+                <div class="spacer"></div>
+                <div class="service-item">
+                    <i class="fas fa-file-alt"></i>
+                    <p><strong>1. Submit a Form:</strong> Fill out our online Microsoft form with your website requirements and preferences. Choose your color theme and add the content you want. Remember to add the names of the photos with the extension.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-pencil-alt"></i>
+                    <p><strong>2. Content Creation:</strong> Our team will add your content to the website and style it to how you want it.</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-share-square"></i>
+                    <p><strong>3. Hosting:</strong> We will send you the website file (index.htm) and provide you with the instructions on how to create a GitHub account and host your website. (If you don’t like it, just send us an email and we’ll provide the updates).</p>
+                </div>
+                <div class="service-item">
+                    <i class="fas fa-bullhorn"></i>
+                    <p><strong>4. Launch Your Presence:</strong> Once hosted, your website is live and ready to help you establish your professional online presence!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- GitHub Hosting Modal -->
+    <div id="hostingModal" class="modal-overlay">
+        <div class="modal-content">
+            <button class="modal-close-btn">&times;</button>
+            <h3>How to Host Your Website on GitHub Pages</h3>
+
+            <h4>Step 1: Create a GitHub Account</h4>
+            <p>Go to <a href="https://github.com" target="_blank">GitHub.com</a> and click on "Sign up" in the top right corner. Fill out the registration form with your details and click on "Create account." Verify your email address by clicking on the link sent to you by GitHub.</p>
+
+            <h4>Step 2: Create a New Repository</h4>
+            <p>Log in to your GitHub account and click on the "<strong>+</strong>" icon in the top right corner. Select "New repository" and fill out the repository name and description. Choose "<strong>Public</strong>" and click on "Create repository."</p>
+
+            <h4>Step 3: Upload Your Website Files</h4>
+            <p>Go to your newly created repository and click on "<strong>Add file</strong>" > "<strong>Upload files</strong>." Ensure you upload the HTML file (e.g., `index.htm`) and any associated image files (like `mainimage2.png`, `aboutsection.png`, etc.) directly into the **root** of the repository. After uploading, click "Commit changes" to save them.</p>
+
+            <h4>Step 4: Configure GitHub Pages</h4>
+            <p>
+                Go to your repository's "<strong>Settings</strong>" tab (usually located near the top). Scroll down to the "<strong>Pages</strong>" section (it might be under "Code and automation" in some layouts). Under "Branch," select the branch you want to use for GitHub Pages (usually "<strong>main</strong>" or "<strong>master</strong>"). If you just uploaded files, this will likely be the `main` branch. Click "Save" or "Deploy branch."
+                <br>
+                It may take a few minutes for GitHub to build and deploy your site. You will see a link to your live site once it's ready.
+            </p>
+
+            <h4>Step 5: Visit Your Website</h4>
+            <p>Once GitHub Pages is configured and built, you can visit your website at:</p>
+            <p><code>https://your-username.github.io/your-repo-name</code></p>
+            <p>Replace "<code>your-username</code>" with your actual GitHub username and "<code>your-repo-name</code>" with your actual repository name (the one you chose in Step 2). Your website is now live!</p>
+        </div>
+    </div>
+    <!-- End GitHub Hosting Modal -->
+
+    <script>
+        // Get references to elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenuBtnIcon = mobileMenuBtn.querySelector('i');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');
+        const desktopNavLinks = document.querySelectorAll('.nav-links a');
+        const fullScreenNavLinks = document.querySelectorAll('#fullScreenMenu a');
+        const navbar = document.getElementById('navbar');
+
+        // Modal elements
+        const openHostingModalBtn = document.getElementById('openHostingModal');
+        const hostingModal = document.getElementById('hostingModal');
+        const modalCloseBtn = hostingModal.querySelector('.modal-close-btn');
+
+        // Function to set active class based on current page
+        function setActiveNavLink() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const pageName = currentPath === '' || currentPath === 'index.htm' ? 'index.htm' : currentPath;
+
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+
+            fullScreenNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Run on page load
+        setActiveNavLink();
+
+        // Toggle full-screen menu with hamburger button
+        mobileMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.toggle('is-active');
+            if (fullScreenMenu.classList.contains('is-active')) {
+                document.body.style.overflow = 'hidden';
+                mobileMenuBtnIcon.classList.remove('fa-bars');
+                mobileMenuBtnIcon.classList.add('fa-times');
+            } else {
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close full-screen menu with the 'X' button
+        closeMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.remove('is-active');
+            document.body.style.overflow = '';
+            mobileMenuBtnIcon.classList.remove('fa-times');
+            mobileMenuBtnIcon.classList.add('fa-bars');
+        });
+
+        // Close full-screen menu when a link inside it is clicked
+        fullScreenNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullScreenMenu.classList.remove('is-active');
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // Modal functionality
+        openHostingModalBtn.addEventListener('click', () => {
+            hostingModal.classList.add('is-active');
+            document.body.style.overflow = 'hidden'; // Prevent body scrolling
+        });
+
+        modalCloseBtn.addEventListener('click', () => {
+            hostingModal.classList.remove('is-active');
+            document.body.style.overflow = ''; // Re-enable body scrolling
+        });
+
+        // Close modal when clicking outside content
+        hostingModal.addEventListener('click', (event) => {
+            if (event.target === hostingModal) {
+                hostingModal.classList.remove('is-active');
+                document.body.style.overflow = '';
+            }
+        });
+    </script>
+</body>
+</html>

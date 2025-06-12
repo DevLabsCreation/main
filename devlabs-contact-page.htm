@@ -1,0 +1,877 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation - Contact</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Consistent with DevlabsCreation design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc; /* Light grey background */
+            --background-white: #ffffff; /* White background */
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            overflow-x: hidden;
+            padding-top: 80px; /* Space for fixed navigation bar */
+            background-color: var(--background-white); /* Default background for the page */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar (fixed at top) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px var(--shadow-light);
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            padding-left: 100px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-right: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+
+        .nav-links a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Underline animation for desktop nav */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Active link for the current page */
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+            margin-right: 30px;
+        }
+
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Full-screen mobile menu overlay */
+        .full-screen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98); /* Semi-transparent white background */
+            backdrop-filter: blur(10px);
+            z-index: 999; /* Below fixed nav, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+
+        .full-screen-menu.is-active {
+            transform: translateX(0); /* Slide in */
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when active */
+        }
+
+        .full-screen-menu ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .full-screen-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .full-screen-menu a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-size: 2.5rem; /* Larger font size for full-screen */
+            font-weight: 700;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            outline: none;
+        }
+
+        .full-screen-menu a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 8px;
+            border-radius: 4px;
+        }
+
+        .full-screen-menu a::after { /* Underline for full-screen menu */
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-menu a:hover::after,
+        .full-screen-menu a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .full-screen-menu a:hover {
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .full-screen-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            z-index: 1001; /* Ensure it's above the menu itself */
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        .close-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .close-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive adjustments for navigation */
+        @media (max-width: 1000px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .logo {
+                padding-left: 30px;
+            }
+        }
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+        }
+
+        /* Sections - General Styling */
+        .section {
+            padding: 5rem 0;
+            background-color: var(--background-white); /* Default background for this page's sections */
+        }
+
+        /* Section Titles - Consistent with previous pages */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+
+        /* Contact Section Specific Styling */
+        #contact.section {
+            background: var(--background-light); /* Light background for the contact section */
+        }
+        #contact .contact-form-wrapper { /* Wrapper for contact forms */
+            background: var(--background-white); /* White background for the wrapper content */
+            padding: 2.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center; /* Center content within wrapper */
+        }
+        #contact .contact-form-wrapper h3 {
+            font-size: 1.8rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+        #contact .contact-form-wrapper p {
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-color-medium);
+            line-height: 1.7;
+            text-align: center; /* Ensure text is centered within wrapper */
+        }
+        #contact .contact-form-wrapper iframe {
+            width: 100%;
+            min-height: 450px; /* Adjusted min-height for iframe */
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            margin-bottom: 1.5rem; /* Space below iframe */
+            display: block; /* Ensure it takes full width and new line */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .fullscreen-btn {
+            background: var(--primary-color);
+            color: var(--background-white);
+            padding: 12px 25px;
+            border: none;
+            border-radius: 50px; /* Fully rounded button */
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            outline: none;
+            display: inline-block; /* For proper margin-bottom and centering */
+            margin-bottom: 2rem; /* Space below button */
+        }
+        .fullscreen-btn:hover {
+            background: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+        .fullscreen-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+        }
+
+
+        /* Footer - Consistent with previous pages */
+        footer {
+            background: var(--text-color-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                padding-left: 30px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            /* Contact responsive */
+            #contact .contact-form-wrapper {
+                padding: 1.5rem;
+            }
+            #contact .contact-form-wrapper h3 {
+                font-size: 1.5rem;
+                margin-top: 1rem;
+                margin-bottom: 0.8rem;
+            }
+            #contact .contact-form-wrapper p {
+                font-size: 1rem;
+                margin-bottom: 1rem;
+            }
+            #contact .contact-form-wrapper iframe {
+                min-height: 350px;
+            }
+            .fullscreen-btn {
+                padding: 10px 20px;
+                font-size: 0.9rem;
+                margin-bottom: 1.5rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            #contact .contact-form-wrapper h3 {
+                font-size: 1.3rem;
+            }
+            #contact .contact-form-wrapper p {
+                font-size: 0.95rem;
+            }
+            #contact .contact-form-wrapper iframe {
+                min-height: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">DevlabsCreation</div>
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="index.htm">Home</a></li>
+                    <li><a href="devlabs-about-page.htm">About</a></li>
+                    <li><a href="devlabs-service-page.htm">Services</a></li>
+                    <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+                    <li><a href="devlabs-contact-page.htm" class="active">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full-screen mobile menu overlay -->
+    <div id="fullScreenMenu" class="full-screen-menu">
+        <button class="close-menu-btn" aria-label="Close menu">&times;</button>
+        <ul>
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="devlabs-about-page.htm">About</a></li>
+            <li><a href="devlabs-service-page.htm">Services</a></li>
+            <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+            <li><a href="devlabs-contact-page.htm">Contact</a></li>
+        </ul>
+    </div>
+
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+
+            <div class="contact-form-wrapper">
+                <h3>Want a website?</h3>
+                <p>If you would like to get a website, use this form:</p>
+                <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+                <button class="fullscreen-btn" onclick="openFullscreen('https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u')">Go Fullscreen</button>
+            </div>
+
+            <br> <!-- Spacer for visual separation -->
+
+            <div class="contact-form-wrapper">
+                <h3>Have Questions?</h3>
+                <p>Feel free to ask us anything by filling out the form below:</p>
+                <iframe width="640px" height="480px" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen></iframe>
+                <button class="fullscreen-btn" onclick="openFullscreen('https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u')">Go Fullscreen</button>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get references to elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenuBtnIcon = mobileMenuBtn.querySelector('i');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');
+        const desktopNavLinks = document.querySelectorAll('.nav-links a');
+        const fullScreenNavLinks = document.querySelectorAll('#fullScreenMenu a');
+        const navbar = document.getElementById('navbar');
+
+        // Function to set active class based on current page
+        function setActiveNavLink() {
+            // Since this is a standalone contact page, the contact link should always be active
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === 'devlabs-contact-page.htm') {
+                    link.classList.add('active');
+                }
+            });
+
+            fullScreenNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === 'devlabs-contact-page.htm') {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Run on page load
+        setActiveNavLink();
+
+        // Toggle full-screen menu with hamburger button
+        mobileMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.toggle('is-active');
+            if (fullScreenMenu.classList.contains('is-active')) {
+                document.body.style.overflow = 'hidden';
+                mobileMenuBtnIcon.classList.remove('fa-bars');
+                mobileMenuBtnIcon.classList.add('fa-times');
+            } else {
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close full-screen menu with the 'X' button
+        closeMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.remove('is-active');
+            document.body.style.overflow = '';
+            mobileMenuBtnIcon.classList.remove('fa-times');
+            mobileMenuBtnIcon.classList.add('fa-bars');
+        });
+
+        // Close full-screen menu when a link inside it is clicked
+        fullScreenNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullScreenMenu.classList.remove('is-active');
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // openFullscreen function remains the same
+        function openFullscreen(url) {
+            const newWindow = window.open(url, '_blank', 'fullscreen=yes');
+            if (newWindow) {
+                newWindow.focus();
+            }
+        }
+    </script>
+</body>
+</html>
+
+Terms
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation - Terms of Service</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Consistent with DevlabsCreation design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc; /* Light grey background */
+            --background-white: #ffffff; /* White background */
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            overflow-x: hidden;
+            padding-top: 80px; /* Space for fixed header */
+            background-color: var(--background-light); /* Light background for the page */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* New Fixed Header Styling */
+        .terms-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0; /* Vertical padding */
+            text-align: center;
+            box-shadow: 0 2px 20px var(--shadow-light);
+            transition: all 0.3s ease;
+        }
+
+        .terms-header h1 {
+            color: var(--primary-color);
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0; /* Remove default margin */
+            line-height: 1; /* Adjust line height to match padding */
+            padding: 0 20px; /* Horizontal padding */
+        }
+
+        /* Section Styling (main content area) */
+        .section {
+            padding: 5rem 0;
+            background-color: var(--background-light);
+        }
+        
+        /* Terms Content Specific Styling */
+        .terms-content-wrapper { /* Wrapper for the terms content */
+            background-color: var(--background-white);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            padding: 3rem; /* More generous padding */
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.8; /* Improved readability for long text */
+            color: var(--text-color-dark); /* Darker text for main content */
+        }
+
+        .terms-content-wrapper h2 {
+            font-size: 1.8rem;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color); /* Highlight section titles within terms */
+            font-weight: 700;
+            text-align: left; /* Align headings left */
+        }
+        .terms-content-wrapper h2:first-of-type {
+            margin-top: 0; /* No top margin for the very first h2 */
+        }
+
+        .terms-content-wrapper p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--text-color-medium); /* Subtler color for regular text */
+            text-align: left; /* Align paragraphs left */
+        }
+
+        .terms-content-wrapper strong {
+            font-weight: 600;
+            color: var(--text-color-dark); /* Stronger bold for emphasis */
+        }
+        .terms-content-wrapper a {
+            color: var(--primary-color);
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+        .terms-content-wrapper a:hover {
+            color: var(--secondary-color);
+        }
+
+        /* Footer - Consistent with previous pages */
+        footer {
+            background: var(--text-color-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+            position: relative;
+            width: 100%;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .terms-header h1 {
+                font-size: 1.5rem;
+            }
+            .section {
+                padding: 3rem 0;
+            }
+            .terms-content-wrapper {
+                padding: 2rem;
+            }
+            .terms-content-wrapper h2 {
+                font-size: 1.5rem;
+            }
+            .terms-content-wrapper p {
+                font-size: 0.95rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .terms-header h1 {
+                font-size: 1.3rem;
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            .terms-content-wrapper {
+                padding: 1.5rem;
+            }
+            .terms-content-wrapper h2 {
+                font-size: 1.3rem;
+            }
+            .terms-content-wrapper p {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- New Fixed Header for Terms of Service -->
+    <header class="terms-header">
+        <h1>Terms of Service</h1>
+    </header>
+
+    <section class="section">
+        <div class="container">
+            <div class="terms-content-wrapper">
+                <p><strong>Date effective:</strong> May 25, 2025</p>
+                <p>Welcome to DevlabsCreation, a free website creation service that uses our own made templates and GitHub for hosting. By using our services, you agree to these Terms of Service.</p>
+
+                <h2>1. Definitions</h2>
+                <p><strong>“Service”</strong> refers to anything DevlabsCreation offers you.</p>
+                <p><strong>"Template"</strong> refers to the pre-made website template used to create your website (these websites are designed by us).</p>
+                <p><strong>"Content"</strong> refers to any information, text, images, or other materials uploaded to or displayed on your website.</p>
+                <p><strong>"User"</strong> refers to you.</p>
+
+                <h2>2. Use of Service</h2>
+                <p>The service we provide is completely free with no hidden costs.</p>
+                <p>DevlabsCreation has the right to discontinue or change our services at any time. You will be able to keep your website files.</p>
+
+                <h2>3. Content and Liability</h2>
+                <p>You are solely responsible for the content that is displayed on your website.</p>
+                <p>DevlabsCreation is not responsible for any of the content, including: Accuracy, or validity, copyright or trademark infringement.</p>
+                <p>You agree to hold DevlabsCreation harmless from any claims, damages, or expenses that come from the website's content.</p>
+
+                <h2>4. Intellectual Property</h2>
+                <p>The Template and any related property rights remain the property of DevlabsCreation while the service remains active.</p>
+
+                <h2>5. GitHub Hosting</h2>
+                <p>Your website may be hosted on GitHub, a third-party hosting platform.</p>
+                <p>You agree to comply with <a href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service" target="_blank">GitHub's Terms of Service</a> and <a href="https://docs.github.com/en/site-policy/acceptable-use-policies/github-acceptable-use-policies" target="_blank">Acceptable Use Policy</a>.</p>
+                <p>DevlabsCreation is not liable for any issues or downtime related to GitHub's hosting services.</p>
+
+                <h2>6. Disclaimer of Warranty</h2>
+                <p>The Service is provided on an "as-is" and "as-available" basis.</p>
+
+                <h2>7. Limitation of Liability</h2>
+                <p>DevlabsCreation shall not be liable for any damages.</p>
+
+                <h2>8. Governing Law</h2>
+                <p>These Terms of Service shall be in accordance with the laws of the province of Ontario, Canada.</p>
+
+                <h2>9. Changes to Terms of Service</h2>
+                <p>DevlabsCreation reserves the right to modify or update these Terms of Service at any time without notice.</p>
+                <p>By using the Service, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // No navigation-specific JavaScript needed on this page anymore.
+        // The script remains empty to maintain the structure but removes all previous nav logic.
+    </script>
+</body>
+</html>
+

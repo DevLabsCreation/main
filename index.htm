@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Inspired by Alex Jordan's design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc;
+            --background-white: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            /* Linear gradient from original design applied to body */
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar (fixed at top) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            padding-left: 100px; /* Adjust as per your original layout */
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-right: 20px; /* Adjust as per your original layout */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+
+        .nav-links a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Underline animation for desktop nav */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Active link for the current page */
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+            margin-right: 30px; /* Adjust as per your original layout */
+        }
+
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Full-screen mobile menu overlay */
+        .full-screen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98); /* Semi-transparent white background */
+            backdrop-filter: blur(10px);
+            z-index: 999; /* Below fixed nav, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+
+        .full-screen-menu.is-active {
+            transform: translateX(0); /* Slide in */
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when active */
+        }
+
+        .full-screen-menu ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .full-screen-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .full-screen-menu a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-size: 2.5rem; /* Larger font size for full-screen */
+            font-weight: 700;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            outline: none;
+        }
+
+        .full-screen-menu a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 8px;
+            border-radius: 4px;
+        }
+
+        .full-screen-menu a::after { /* Underline for full-screen menu */
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-menu a:hover::after,
+        .full-screen-menu a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .full-screen-menu a:hover {
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .full-screen-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            z-index: 1001; /* Ensure it's above the menu itself */
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        .close-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .close-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive adjustments for navigation */
+        @media (max-width: 1000px) {
+            .nav-links { /* Hide standard desktop nav */
+                display: none;
+            }
+            .mobile-menu-btn { /* Show hamburger icon */
+                display: block;
+            }
+            .logo {
+                padding-left: 30px; /* Adjust logo padding for smaller screens */
+            }
+        }
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem; /* Smaller font on very small screens */
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+        }
+
+        /* Hero Section */
+        #home {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            /* Background gradient applied to the body, keeping this for consistency with previous version */
+        }
+
+        .hero-background-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.6; /* Adjust opacity to let the gradient show through */
+            z-index: 0;
+        }
+
+        #home::before { /* Animated dots layer */
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1.5" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 20s infinite linear;
+            z-index: 1;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
+        }
+
+        .hero-content {
+            z-index: 2;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #home h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            font-weight: 800;
+        }
+
+        #home p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            padding: 12px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
+            outline: none;
+        }
+        .cta-button:focus-visible {
+            outline: 2px solid white;
+            outline-offset: 4px;
+        }
+
+        .cta-button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+            z-index: 2; /* Ensure it's above hero elements */
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        /* Sections */
+        .section {
+            padding: 5rem 0;
+            background: var(--background-white);
+        }
+
+        /* Adjust section backgrounds for alternating colors */
+        #about.section {
+            background: var(--background-white);
+        }
+        #services.section {
+            background: var(--background-light);
+        }
+        #gallery.section {
+            background: var(--background-white);
+        }
+        #contact.section {
+            background: var(--background-light);
+        }
+
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr; /* Changed to single column */
+            gap: 2rem; /* Adjusted gap */
+            align-items: center;
+            max-width: 900px; /* Constrain width for readability */
+            margin: 0 auto; /* Center the content */
+        }
+
+        /* Removed .about-image CSS */
+
+        .about-text-wrapper { /* New wrapper for the main text content */
+            background: var(--background-white);
+            padding: 2.5rem; /* More generous padding */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            line-height: 1.8;
+            color: var(--text-color-medium);
+        }
+
+        .about-text-wrapper p {
+            margin-bottom: 1rem; /* Space between paragraphs */
+            font-size: 1.1rem;
+        }
+
+        .about-text-wrapper h3 {
+            color: var(--text-color-dark);
+            font-size: 1.8rem; /* Larger heading for clarity */
+            margin-top: 2.5rem; /* Space above sub-headings */
+            margin-bottom: 1.5rem;
+            text-align: center; /* Center the sub-headings */
+        }
+
+        .feature-tags { /* New class for the container of skill/feature tags */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            justify-content: center; /* Center the tags */
+        }
+
+        .skill-tag { /* Retaining this class name as it's good for the visual style */
+            background: var(--primary-color);
+            color: white;
+            padding: 0.6rem 1.2rem; /* Slightly larger padding */
+            border-radius: 50px; /* More rounded */
+            font-size: 0.95rem; /* Slightly larger font */
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+        .skill-tag i {
+            margin-right: 0.6rem;
+            font-size: 1rem;
+        }
+        .skill-tag:hover {
+            background: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+
+        /* Services and Gallery Items Styling (Reusing blog-grid concept) */
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-post { /* Used for Services and Gallery items */
+            background: var(--background-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid var(--border-color); /* Added subtle border */
+        }
+
+        .blog-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .blog-image { /* For icons in Services and images in Gallery */
+            height: 200px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color)); /* Default gradient for icons */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 3rem; /* Increased icon size */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-image img { /* For images in Gallery if directly used */
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+        }
+        .blog-image i {
+             z-index: 2; /* Ensure icon is above image if present */
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .blog-title {
+            color: var(--text-color-dark);
+            margin-bottom: 0.5rem; /* Adjusted margin */
+            font-size: 1.5rem; /* Slightly larger title */
+        }
+
+        .blog-excerpt {
+            color: var(--text-color-medium);
+            margin-bottom: 1rem;
+            flex-grow: 1;
+        }
+
+        /* Gallery Specific Overrides and Controls */
+        /* Updated styles to ensure images are fully visible */
+        #gallery .blog-post .blog-image-wrapper { /* New wrapper for gallery images inside blog-post */
+            width: 100%;
+            /* Removed padding-top for fixed aspect ratio to allow natural image height */
+            position: relative;
+            overflow: hidden;
+            display: flex; /* Use flexbox to center image vertically if needed */
+            justify-content: center; /* Center horizontally */
+            align-items: center; /* Center vertically */
+            background-color: var(--background-light); /* Background for empty space if image is 'contain' */
+        }
+        #gallery .blog-post .blog-image-wrapper img {
+            position: relative; /* Change from absolute to relative for natural flow */
+            width: 100%;
+            height: auto; /* Allow image height to scale naturally */
+            object-fit: contain; /* Ensure the whole image is visible, scale down if necessary */
+            border-radius: 15px 15px 0 0; /* Match parent border-radius */
+        }
+
+
+        /* Contact Section */
+        #contact {
+            padding: 5rem 0; /* Consistent padding */
+            background: var(--background-light); /* Consistent background */
+            text-align: center;
+        }
+
+        .contact-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-form iframe {
+            width: 100%;
+            min-height: 500px;
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--text-color-dark); /* Using dark text color for footer background */
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* General Responsive Design */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            .hero p {
+                font-size: 1rem;
+                padding: 0 1rem;
+            }
+            .about-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+            .about-image {
+                height: 300px;
+                order: -1; /* Puts image above text on mobile */
+            }
+            .section {
+                padding: 3rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            .blog-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+            .skills {
+                justify-content: center;
+            }
+            .social-links {
+                gap: 1rem;
+            }
+            .social-links a {
+                width: 45px;
+                height: 45px;
+                font-size: 1.2rem;
+            }
+            .container {
+                padding: 0 15px;
+            }
+            #home {
+                padding: 0 20px;
+            }
+             .thumbnails img { /* This rule is now obsolete, can be removed */
+                width: 80px;
+                height: 50px;
+                margin: 0 5px;
+            }
+             .about-text-wrapper { /* Mobile specific padding */
+                padding: 1.5rem;
+            }
+            .about-text-wrapper h3 { /* Mobile specific heading size */
+                font-size: 1.5rem;
+                margin-top: 1.5rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .blog-image {
+                font-size: 2rem; /* Smaller icon size for smaller screens */
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+            .about-image {
+                height: 250px;
+                font-size: 3rem;
+            }
+            .skill-tag {
+                font-size: 0.75rem;
+                padding: 0.4rem 0.8rem;
+            }
+             .prev, .next { /* These rules are now obsolete, can be removed */
+                font-size: 1.2rem;
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">DevlabsCreation</div>
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="index.htm" class="active">Home</a></li>
+                    <li><a href="devlabs-about-page.htm">About</a></li>
+                    <li><a href="devlabs-service-page.htm">Services</a></li>
+                    <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+                    <li><a href="devlabs-contact-page.htm">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full-screen mobile menu overlay -->
+    <div id="fullScreenMenu" class="full-screen-menu">
+        <button class="close-menu-btn" aria-label="Close menu">&times;</button>
+        <ul>
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="devlabs-about-page.htm">About</a></li>
+            <li><a href="devlabs-service-page.htm">Services</a></li>
+            <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+            <li><a href="devlabs-contact-page.htm">Contact</a></li>
+        </ul>
+    </div>
+
+    <section id="home" class="hero">
+        <!-- Updated hero-background-image src -->
+        <img class="hero-background-image" src="mainwebsiteimage.png" alt="Main Background Image of DevlabsCreation">
+        <div class="hero-content">
+            <h1>Welcome to DevlabsCreation</h1>
+            <p>Your path to a FREE online presence. Get a professional website, no cost.</p>
+            <a href="devlabs-contact-page.htm" class="cta-button">Get Your Website</a>
+        </div>
+        <div class="scroll-indicator">
+            <div style="width: 2px; height: 30px; background: rgba(255,255,255,0.5); margin: 0 auto;"></div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container">
+            <h2 class="section-title">About DevlabsCreation</h2>
+            <div class="about-content">
+                <div class="about-text-wrapper">
+                    <p>DevlabsCreation aims to provide anyone with a free website that suits their needs. We strive to promote online presence and digital inclusivity.</p>
+                    <p>At DevlabsCreation, we provide a service to help anyone get their own personal website and be part of the expansive network of websites. The website is based on our own design and can be customized for many different needs. Our team consists of dedicated individuals.</p>
+
+                    <h3>Why get a personal website?</h3>
+                    <div class="feature-tags">
+                        <span class="skill-tag"><i class="fas fa-globe"></i> Establish Online Presence</span>
+                        <span class="skill-tag"><i class="fas fa-briefcase"></i> Showcase Work & Skills</span>
+                        <span class="skill-tag"><i class="fas fa-network-wired"></i> Networking & Opportunities</span>
+                        <span class="skill-tag"><i class="fas fa-circle"></i> Personal Branding</span>
+                    </div>
+                    <h3>Why choose us?</h3>
+                    <div class="feature-tags">
+                        <span class="skill-tag"><i class="fas fa-code"></i> Professional Design</span>
+                        <span class="skill-tag"><i class="fas fa-clock"></i> Save Time & Effort</span>
+                        <span class="skill-tag"><i class="fas fa-palette"></i> Easy Customization</span>
+                        <span class="skill-tag"><i class="fas fa-arrow-right"></i> Quick Launch</span>
+                        <span class="skill-tag"><i class="fas fa-image"></i> Focus on Content</span>
+                        <span class="skill-tag"><i class="fas fa-dollar-sign"></i> No Cost to Start</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <p style="text-align: center; margin-bottom: 3rem; font-size: 1.1rem; color: var(--text-color-medium);">
+                At DevlabsCreation, we offer a service to provide anyone with their own personal websites.
+            </p>
+            <div class="blog-grid"> <!-- Reusing blog-grid for service items -->
+                <article class="blog-post">
+                    <div class="blog-image"><i class="fas fa-palette"></i></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Web Design</h3>
+                        <p class="blog-excerpt">We provide a fresh website design every 6 months, ensuring your online presence stays modern and engaging.</p>
+                    </div>
+                </article>
+                <article class="blog-post">
+                    <div class="blog-image"><i class="fas fa-mobile-alt"></i></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Screen Optimization</h3>
+                        <p class="blog-excerpt">We ensure your website looks great and functions perfectly across all devices, from desktops to smartphones.</p>
+                    </div>
+                </article>
+                <article class="blog-post">
+                    <div class="blog-image"><i class="fas fa-file-code"></i></div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Full Website Coding</h3>
+                        <p class="blog-excerpt">We code the entire website! All you need to do is fill out a simple form with your content and follow our easy steps to host it on GitHub.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Updated Gallery Section -->
+    <section id="gallery" class="section">
+        <div class="container">
+            <h2 class="section-title">Our Designs</h2>
+            <p style="text-align: center; margin-bottom: 3rem; font-size: 1.1rem; color: var(--text-color-medium);">
+                Explore examples of our website designs and themes.
+            </p>
+            <div class="blog-grid">
+                <!-- Gallery Item 1: Main Website Image -->
+                <article class="blog-post">
+                    <div class="blog-image-wrapper">
+                        <img src="mainimagegold.png" alt="DevlabsCreation Main Website Design">
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Main Page Design</h3>
+                        <p class="blog-excerpt">A sleek and modern homepage showcasing our core aesthetic.</p>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 2: Contact Section -->
+                <article class="blog-post">
+                    <div class="blog-image-wrapper">
+                        <img src="contactsection.png" alt="DevlabsCreation Contact Form Design">
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Contact Form Layout</h3>
+                        <p class="blog-excerpt">An intuitive and user-friendly contact section to engage with your audience.</p>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 3: Testimonial Section -->
+                <article class="blog-post">
+                    <div class="blog-image-wrapper">
+                        <img src="testimonialsection.png" alt="DevlabsCreation Testimonial Section Design">
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">Client Testimonials</h3>
+                        <p class="blog-excerpt">Displaying client feedback to build trust and credibility.</p>
+                    </div>
+                </article>
+
+                <!-- Gallery Item 4: About Section -->
+                <article class="blog-post">
+                    <div class="blog-image-wrapper">
+                        <img src="aboutsection.png" alt="DevlabsCreation About Section Design">
+                    </div>
+                    <div class="blog-content">
+                        <h3 class="blog-title">About Us Section</h3>
+                        <p class="blog-excerpt">A concise and informative layout for introducing your brand and mission.</p>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+    <!-- End Updated Gallery Section -->
+
+    <section id="contact" class="section">
+        <div class="container">
+            <h2 class="section-title">Get In Touch</h2>
+            <p style="text-align: center; margin-bottom: 3rem; font-size: 1.1rem; color: var(--text-color-medium);">
+                Ready to take your online presence to the next level? Fill out the form below or connect with us directly!
+            </p>
+            <div class="contact-content">
+                <div class="contact-form">
+                    <iframe width="100%" src="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u&embed=true" frameborder="0" marginwidth="0" marginheight="0" style="border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get references to elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenuBtnIcon = mobileMenuBtn.querySelector('i'); // Get the icon within the button
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');
+        const desktopNavLinks = document.querySelectorAll('.nav-links a');
+        const fullScreenNavLinks = document.querySelectorAll('#fullScreenMenu a');
+        const navbar = document.getElementById('navbar');
+
+        // Function to set active class based on current page
+        function setActiveNavLink() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const pageName = currentPath === '' || currentPath === 'index.htm' ? 'index.htm' : currentPath;
+
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+
+            fullScreenNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === pageName) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Run on page load
+        setActiveNavLink();
+
+        // Toggle full-screen menu with hamburger button
+        mobileMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.toggle('is-active');
+            if (fullScreenMenu.classList.contains('is-active')) {
+                document.body.style.overflow = 'hidden'; // Prevent scrolling when menu is open
+                mobileMenuBtnIcon.classList.remove('fa-bars');
+                mobileMenuBtnIcon.classList.add('fa-times');
+            } else {
+                document.body.style.overflow = ''; // Re-enable scrolling
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close full-screen menu with the 'X' button
+        closeMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.remove('is-active');
+            document.body.style.overflow = ''; // Re-enable scrolling
+            mobileMenuBtnIcon.classList.remove('fa-times'); // Reset hamburger icon
+            mobileMenuBtnIcon.classList.add('fa-bars');
+        });
+
+        // Close full-screen menu when a link inside it is clicked
+        fullScreenNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullScreenMenu.classList.remove('is-active');
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times'); // Reset hamburger icon
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>

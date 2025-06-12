@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="utf-8">
+    <title>DevlabsCreation - Gallery</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="https://img.icons8.com/?size=100&id=44484&format=png&color=000000" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables - Consistent with DevlabsCreation design */
+        :root {
+            --primary-color: #667eea; /* A vibrant purple-blue */
+            --secondary-color: #764ba2; /* A deeper purple */
+            --text-color-dark: #2d3748;
+            --text-color-medium: #4a5568;
+            --text-color-light: #718096;
+            --background-light: #f8fafc; /* Light grey background */
+            --background-white: #ffffff; /* White background */
+            --border-color: #e2e8f0;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-medium: rgba(0, 0, 0, 0.2);
+            --modal-bg-dark: #2d3748; /* Keeping variable for consistency, not used on this page */
+            --modal-text-light: #f8fafc; /* Keeping variable for consistency, not used on this page */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color-medium);
+            overflow-x: hidden;
+            padding-top: 80px; /* Space for fixed navigation bar */
+            background-color: var(--background-white); /* Default background for the page */
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation Bar (fixed at top) */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            transition: all 0.3s ease;
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 2px 20px var(--shadow-light);
+            padding: 0.8rem 0;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.7rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: -0.5px;
+            padding-left: 100px;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2.5rem;
+            margin-right: 20px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-weight: 600;
+            transition: color 0.3s ease;
+            position: relative;
+            padding: 0.25rem 0;
+            outline: none;
+        }
+
+        .nav-links a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+        /* Underline animation for desktop nav */
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Active link for the current page */
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .mobile-menu-btn {
+            display: none; /* Hidden by default on desktop */
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+            margin-right: 30px;
+        }
+
+        .mobile-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .mobile-menu-btn:hover {
+            color: var(--primary-color);
+            transform: scale(1.1);
+        }
+
+        /* Full-screen mobile menu overlay */
+        .full-screen-menu {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(255, 255, 255, 0.98); /* Semi-transparent white background */
+            backdrop-filter: blur(10px);
+            z-index: 999; /* Below fixed nav, above content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transform: translateX(100%); /* Start off-screen to the right */
+            transition: transform 0.5s ease-in-out;
+            opacity: 0;
+            pointer-events: none; /* Disable interaction when hidden */
+        }
+
+        .full-screen-menu.is-active {
+            transform: translateX(0); /* Slide in */
+            opacity: 1;
+            pointer-events: auto; /* Enable interaction when active */
+        }
+
+        .full-screen-menu ul {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .full-screen-menu li {
+            margin: 1.5rem 0;
+        }
+
+        .full-screen-menu a {
+            text-decoration: none;
+            color: var(--text-color-dark);
+            font-size: 2.5rem; /* Larger font size for full-screen */
+            font-weight: 700;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+            position: relative;
+            outline: none;
+        }
+
+        .full-screen-menu a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 8px;
+            border-radius: 4px;
+        }
+
+        .full-screen-menu a::after { /* Underline for full-screen menu */
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            transform-origin: center;
+            width: 100%;
+            height: 4px;
+            background: var(--primary-color);
+            border-radius: 2px;
+            transition: transform 0.3s ease;
+        }
+
+        .full-screen-menu a:hover::after,
+        .full-screen-menu a.active::after {
+            transform: translateX(-50%) scaleX(1);
+        }
+
+        .full-screen-menu a:hover {
+            color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .full-screen-menu a.active {
+            color: var(--primary-color);
+        }
+
+        .close-menu-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background: none;
+            border: none;
+            font-size: 2.5rem;
+            color: var(--text-color-dark);
+            cursor: pointer;
+            z-index: 1001; /* Ensure it's above the menu itself */
+            transition: color 0.3s ease, transform 0.3s ease;
+            outline: none;
+        }
+
+        .close-menu-btn:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 4px;
+        }
+
+        .close-menu-btn:hover {
+            color: var(--primary-color);
+            transform: rotate(90deg);
+        }
+
+        /* Responsive adjustments for navigation */
+        @media (max-width: 1000px) {
+            .nav-links {
+                display: none;
+            }
+            .mobile-menu-btn {
+                display: block;
+            }
+            .logo {
+                padding-left: 30px;
+            }
+        }
+        @media (max-width: 600px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+        }
+
+        /* Sections - General Styling */
+        .section {
+            padding: 5rem 0;
+            background-color: var(--background-white); /* Default background for this page's sections */
+        }
+
+        /* Section Titles - Consistent with previous pages */
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-dark);
+            font-weight: 700;
+        }
+
+        /* Gallery Specific Styling */
+        #gallery .container {
+            max-width: 1000px; /* Adjust max-width for gallery content */
+        }
+        #gallery p {
+            text-align: center;
+            font-size: 1.1rem;
+            margin-bottom: 3rem;
+            color: var(--text-color-medium);
+            line-height: 1.7;
+        }
+        #gallery .gallery-link {
+            text-align: center;
+            margin-top: 3rem;
+            font-size: 1.1rem;
+        }
+        #gallery .gallery-link a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+            outline: none;
+        }
+        #gallery .gallery-link a:hover {
+            color: var(--secondary-color);
+            text-decoration: underline;
+        }
+        #gallery .gallery-link a:focus-visible {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 4px;
+            border-radius: 2px;
+        }
+
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid */
+            gap: 2rem; /* Gap between images */
+            margin-top: 2rem;
+        }
+
+        .gallery-item {
+            background: var(--background-white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px var(--shadow-light);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative; /* For image overlay/caption if needed later */
+            border: 1px solid var(--border-color); /* Subtle border */
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px var(--shadow-medium);
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: 220px; /* Fixed height for consistent grid look */
+            object-fit: cover; /* Ensures images cover the area without distortion */
+            display: block; /* Remove extra space below image */
+        }
+
+        /* Responsive image sources using <picture> */
+        .gallery-item picture {
+            display: block; /* Ensure picture element behaves like a block */
+            height: 100%;
+        }
+        .gallery-item picture source, .gallery-item picture img {
+            height: 100%;
+        }
+
+
+        /* Footer - Consistent with previous pages */
+        footer {
+            background: var(--text-color-dark);
+            color: white;
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .social-links a:hover {
+            color: var(--primary-color);
+            background: white;
+            transform: translateY(-3px);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo {
+                padding-left: 30px;
+            }
+            .mobile-menu-btn {
+                margin-right: 20px;
+            }
+            .full-screen-menu a {
+                font-size: 1.8rem;
+            }
+            .close-menu-btn {
+                font-size: 2rem;
+            }
+
+            .section {
+                padding: 3rem 0;
+            }
+            .section-title {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+            #gallery p {
+                font-size: 1rem;
+                margin-bottom: 2rem;
+            }
+            .gallery-grid {
+                grid-template-columns: 1fr; /* Single column on mobile */
+                gap: 1.5rem;
+            }
+            .gallery-item img {
+                height: 200px; /* Adjust height for smaller screens */
+            }
+            #gallery .gallery-link {
+                font-size: 1rem;
+                margin-top: 2rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 1.5rem;
+                padding-left: 20px;
+            }
+            .section {
+                padding: 2rem 0;
+            }
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav id="navbar">
+        <div class="container">
+            <div class="nav-container">
+                <div class="logo">DevlabsCreation</div>
+                <button class="mobile-menu-btn" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="nav-links">
+                    <li><a href="index.htm">Home</a></li>
+                    <li><a href="devlabs-about-page.htm">About</a></li>
+                    <li><a href="devlabs-service-page.htm">Services</a></li>
+                    <li><a href="devlabs-gallery-page.htm" class="active">Gallery</a></li>
+                    <li><a href="devlabs-contact-page.htm">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Full-screen mobile menu overlay -->
+    <div id="fullScreenMenu" class="full-screen-menu">
+        <button class="close-menu-btn" aria-label="Close menu">&times;</button>
+        <ul>
+            <li><a href="index.htm">Home</a></li>
+            <li><a href="devlabs-about-page.htm">About</a></li>
+            <li><a href="devlabs-service-page.htm">Services</a></li>
+            <li><a href="devlabs-gallery-page.htm">Gallery</a></li>
+            <li><a href="devlabs-contact-page.htm">Contact</a></li>
+        </ul>
+    </div>
+
+    <section id="gallery" class="section">
+        <div class="container">
+            <h2 class="section-title">Gallery</h2>
+            <p>Discover our website templates! We offer various color themes, and a new design is released every 6 months to keep your online presence fresh and modern.</p>
+            <p>The current featured design is: <strong>Colorful Playground</strong>.</p>
+
+            <div class="gallery-grid">
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimagegold.png"  alt="Main Section (Gold Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="aboutsection.png" alt="About Section (Gold Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="portfoliosection.png"  alt="Portfolio Section (Gold Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="contactsection.png" alt="Contact Section (Gold Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimageblue.png"  alt="Main Section (Blue Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimagered.png" alt="Main Section (Red Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimageyellow.png"  alt="Main Section (Yellow Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimagegreen.png" alt="Main Section (Green Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimagepurple.png" alt="Main Section (Purple Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimageorange.png" alt="Main Section (Orange Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimageyellow.png" alt="Main Section (Yellow Theme)">
+                    </picture>
+                </div>
+                <div class="gallery-item">
+                    <picture>
+                        <img src="mainimagepink.png" alt="Main Section (Pink Theme)">
+                    </picture>
+                </div>
+            </div>
+            <p class="gallery-link">See the live website: <a href="https://ethany28.github.io/EthanYeung/" target="_blank">https://ethany28.github.io/EthanYeung</a></p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="social-links">
+            <a href="https://linkedin.com/company/devlabscreation" target="_blank" title="Visit our LinkedIn page" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUMVhPU09BMDFVT1NPTzhZSjJSNVFPTE1ETi4u" target="_blank" title="Submit a form to get a website" aria-label="Get a website form"><i class="fas fa-file-alt"></i></a>
+            <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAANAAoxDrAxUN0xYSkc2WDNFVlg5MjUxNE0xSDFLRTZMSi4u" target="_blank" title="Ask questions" aria-label="Ask questions form"><i class="fas fa-question-circle"></i></a>
+        </div>
+        <div class="container">
+            <p>&copy; 2025 DevlabsCreation. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Get references to elements
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenuBtnIcon = mobileMenuBtn.querySelector('i');
+        const fullScreenMenu = document.getElementById('fullScreenMenu');
+        const closeMenuBtn = document.querySelector('.close-menu-btn');
+        const desktopNavLinks = document.querySelectorAll('.nav-links a');
+        const fullScreenNavLinks = document.querySelectorAll('#fullScreenMenu a');
+        const navbar = document.getElementById('navbar');
+
+        // Function to set active class based on current page
+        function setActiveNavLink() {
+            // Since this is a standalone gallery page, the gallery link should always be active
+            desktopNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === 'devlabs-gallery-page.htm') {
+                    link.classList.add('active');
+                }
+            });
+
+            fullScreenNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === 'devlabs-gallery-page.htm') {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        // Run on page load
+        setActiveNavLink();
+
+        // Toggle full-screen menu with hamburger button
+        mobileMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.toggle('is-active');
+            if (fullScreenMenu.classList.contains('is-active')) {
+                document.body.style.overflow = 'hidden';
+                mobileMenuBtnIcon.classList.remove('fa-bars');
+                mobileMenuBtnIcon.classList.add('fa-times');
+            } else {
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close full-screen menu with the 'X' button
+        closeMenuBtn.addEventListener('click', () => {
+            fullScreenMenu.classList.remove('is-active');
+            document.body.style.overflow = '';
+            mobileMenuBtnIcon.classList.remove('fa-times');
+            mobileMenuBtnIcon.classList.add('fa-bars');
+        });
+
+        // Close full-screen menu when a link inside it is clicked
+        fullScreenNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                fullScreenMenu.classList.remove('is-active');
+                document.body.style.overflow = '';
+                mobileMenuBtnIcon.classList.remove('fa-times');
+                mobileMenuBtnIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 0) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
